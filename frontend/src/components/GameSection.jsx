@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gamepad2, Code, Brain } from 'lucide-react';
+import { Gamepad2, Users, Heart } from 'lucide-react';
 import TicTacToe from './TicTacToe';
 import ChessGame from './ChessGame';
 
@@ -15,11 +15,12 @@ const GameSection = () => {
         <div className="mb-16">
           <h2 className="text-4xl md:text-5xl font-bold font-inter text-white mb-4 flex items-center justify-center">
             <Gamepad2 className="text-blue-500 mr-4" size={40} />
-            Interactive <span className="text-blue-400 ml-2">Games</span>
+            Let's <span className="text-blue-400 ml-2">Play Together!</span>
           </h2>
           <div className="w-24 h-1 bg-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400 text-lg font-inter max-w-2xl mx-auto">
-            Explore interactive games showcasing algorithm implementation and game logic
+          <p className="text-gray-400 text-lg font-inter max-w-2xl mx-auto flex items-center justify-center">
+            <Heart className="mr-2 text-red-400" size={20} />
+            Interactive games to play together - come join me for some fun!
           </p>
         </div>
 
@@ -33,7 +34,7 @@ const GameSection = () => {
                 : 'btn-outline hover-lift'
             }`}
           >
-            <Code size={18} />
+            <Users size={18} />
             <span>Tic-Tac-Toe</span>
           </button>
           <button
@@ -44,8 +45,8 @@ const GameSection = () => {
                 : 'btn-outline hover-lift'
             }`}
           >
-            <Brain size={18} />
-            <span>AI Chess</span>
+            <Users size={18} />
+            <span>Chess</span>
           </button>
         </div>
 
@@ -53,16 +54,22 @@ const GameSection = () => {
         <div className="cyber-card p-6 max-w-2xl mx-auto mb-8">
           {activeGame === 'tictactoe' ? (
             <div>
-              <h3 className="text-white font-bold mb-2 font-inter">Classic Tic-Tac-Toe</h3>
+              <h3 className="text-white font-bold mb-2 font-inter flex items-center justify-center">
+                <Heart className="mr-2 text-red-400" size={16} />
+                Tic-Tac-Toe Fun
+              </h3>
               <p className="text-gray-400 text-sm font-inter">
-                A classic implementation with game state management, win detection, and score tracking.
+                Classic game for two players! Take turns and try to get three in a row. Let's see who wins!
               </p>
             </div>
           ) : (
             <div>
-              <h3 className="text-white font-bold mb-2 font-inter">AI-Powered Chess</h3>
+              <h3 className="text-white font-bold mb-2 font-inter flex items-center justify-center">
+                <Heart className="mr-2 text-red-400" size={16} />
+                Chess Together
+              </h3>
               <p className="text-gray-400 text-sm font-inter">
-                Full chess implementation with AI opponent using minimax algorithm and alpha-beta pruning.
+                The classic strategy game! White moves first, then we take turns. Let's play and have fun together!
               </p>
             </div>
           )}
@@ -71,6 +78,18 @@ const GameSection = () => {
         {/* Game Container */}
         <div className="flex justify-center">
           {activeGame === 'tictactoe' ? <TicTacToe /> : <ChessGame />}
+        </div>
+
+        {/* Friendly Message */}
+        <div className="mt-12 cyber-card p-6 max-w-lg mx-auto">
+          <div className="text-center">
+            <Heart className="mx-auto text-red-400 mb-3" size={24} />
+            <h3 className="text-white font-bold mb-2 font-inter">Come Play With Me!</h3>
+            <p className="text-gray-400 text-sm font-inter">
+              I love playing games with visitors! Pick a game above and let's have some fun together. 
+              No pressure - just good times! 🎮
+            </p>
+          </div>
         </div>
       </div>
     </section>
