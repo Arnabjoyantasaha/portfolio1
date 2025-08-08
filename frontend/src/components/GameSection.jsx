@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gamepad2 } from 'lucide-react';
+import { Gamepad2, Code, Brain } from 'lucide-react';
 import TicTacToe from './TicTacToe';
 import ChessGame from './ChessGame';
 
@@ -7,40 +7,65 @@ const GameSection = () => {
   const [activeGame, setActiveGame] = useState('tictactoe');
 
   return (
-    <section id="game" className="py-20 bg-black">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section id="game" className="section-padding bg-gradient-to-b from-black to-gray-900 relative">
+      <div className="absolute inset-0 tech-grid opacity-20"></div>
+      
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        {/* Section Header */}
         <div className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 flex items-center justify-center">
-            <Gamepad2 className="text-blue-400 mr-4" size={48} />
-            <span className="text-blue-400">Game</span> Zone
+          <h2 className="text-4xl md:text-5xl font-bold font-inter text-white mb-4 flex items-center justify-center">
+            <Gamepad2 className="text-blue-500 mr-4" size={40} />
+            Interactive <span className="text-blue-400 ml-2">Games</span>
           </h2>
-          <p className="text-gray-300 text-xl">
-            Challenge yourself with some interactive games!
+          <div className="w-24 h-1 bg-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400 text-lg font-inter max-w-2xl mx-auto">
+            Explore interactive games showcasing algorithm implementation and game logic
           </p>
         </div>
 
         {/* Game Selector */}
-        <div className="flex justify-center space-x-4 mb-8">
+        <div className="flex justify-center space-x-4 mb-12">
           <button
             onClick={() => setActiveGame('tictactoe')}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+            className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 font-inter ${
               activeGame === 'tictactoe'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                ? 'btn-primary'
+                : 'btn-outline hover-lift'
             }`}
           >
-            Tic-Tac-Toe
+            <Code size={18} />
+            <span>Tic-Tac-Toe</span>
           </button>
           <button
             onClick={() => setActiveGame('chess')}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+            className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 font-inter ${
               activeGame === 'chess'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                ? 'btn-primary'
+                : 'btn-outline hover-lift'
             }`}
           >
-            AI Chess
+            <Brain size={18} />
+            <span>AI Chess</span>
           </button>
+        </div>
+
+        {/* Game Description */}
+        <div className="cyber-card p-6 max-w-2xl mx-auto mb-8">
+          {activeGame === 'tictactoe' ? (
+            <div>
+              <h3 className="text-white font-bold mb-2 font-inter">Classic Tic-Tac-Toe</h3>
+              <p className="text-gray-400 text-sm font-inter">
+                A classic implementation with game state management, win detection, and score tracking.
+              </p>
+            </div>
+          ) : (
+            <div>
+              <h3 className="text-white font-bold mb-2 font-inter">AI-Powered Chess</h3>
+              <p className="text-gray-400 text-sm font-inter">
+                Full chess implementation with AI opponent using minimax algorithm and alpha-beta pruning.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Game Container */}

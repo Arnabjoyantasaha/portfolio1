@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, Terminal } from 'lucide-react';
 import { portfolioData } from '../data/mock';
 import { useToast } from '../hooks/use-toast';
 
@@ -28,8 +28,8 @@ const ContactSection = () => {
     // Simulate form submission
     setTimeout(() => {
       toast({
-        title: "Message sent!",
-        description: "Thank you for reaching out. I'll get back to you soon!",
+        title: "Message sent successfully!",
+        description: "Thank you for reaching out. I'll get back to you soon.",
       });
       
       setFormData({ name: '', email: '', message: '' });
@@ -59,60 +59,90 @@ const ContactSection = () => {
   ];
 
   const socialLinks = [
-    { icon: Github, href: personal.githubUrl },
-    { icon: Linkedin, href: personal.linkedinUrl },
-    { icon: Twitter, href: personal.twitterUrl }
+    { icon: Github, href: personal.githubUrl, label: 'GitHub' },
+    { icon: Linkedin, href: personal.linkedinUrl, label: 'LinkedIn' },
+    { icon: Twitter, href: personal.twitterUrl, label: 'Twitter' }
   ];
 
   return (
-    <section id="contact" className="py-20 bg-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="contact" className="section-padding bg-black relative">
+      <div className="absolute inset-0 tech-grid opacity-20"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold font-inter text-white mb-4">
             Get In <span className="text-blue-400">Touch</span>
           </h2>
+          <div className="w-24 h-1 bg-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400 text-lg font-inter max-w-2xl mx-auto">
+            Let's discuss opportunities and collaborate on exciting projects
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Left Column - Code block and info */}
+          {/* Contact Information */}
           <div className="space-y-8">
-            {/* Code Block */}
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 font-mono text-sm">
-              <div className="text-gray-400 mb-2">// Let's connect!</div>
-              <div className="text-blue-400">function</div>
-              <div className="text-yellow-400 ml-2">getInTouch</div>
-              <div className="text-white">() {'{'}</div>
-              <div className="text-white ml-4">
-                <span className="text-blue-400">return</span> <span className="text-green-400">"Ready to collaborate!"</span>;
+            {/* Terminal Contact */}
+            <div className="cyber-card p-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="flex space-x-1">
+                  <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                </div>
+                <span className="text-blue-400 font-mono text-sm">connect.sh</span>
               </div>
-              <div className="text-white">{'}'}</div>
+              
+              <div className="font-mono text-sm space-y-2">
+                <div className="syntax-comment">// Contact Interface</div>
+                <div className="text-green-400">$ npm run connect</div>
+                <div className="text-blue-400">
+                  <span className="syntax-keyword">function</span> <span className="syntax-function">getInTouch</span>() {'{'}
+                </div>
+                <div className="pl-4 text-green-400">
+                  return <span className="syntax-string">"Ready to collaborate!"</span>;
+                </div>
+                <div className="text-blue-400">{'}'}</div>
+                <div className="text-gray-400 mt-2">
+                  Status: <span className="text-green-400">Available for opportunities</span>
+                </div>
+              </div>
             </div>
 
-            <div className="text-gray-300 leading-relaxed text-lg">
-              {contact.subtitle}
+            {/* Professional Summary */}
+            <div className="cyber-card p-6">
+              <h3 className="text-xl font-bold text-white mb-4 font-inter">
+                Professional Interests
+              </h3>
+              <p className="text-gray-400 leading-relaxed font-inter">
+                {contact.subtitle}
+              </p>
             </div>
 
-            {/* Contact Information */}
+            {/* Contact Details */}
             <div className="space-y-4">
               {contactInfo.map((item, index) => {
                 const IconComponent = item.icon;
                 return (
-                  <div key={index} className="flex items-center space-x-4">
-                    <div className="bg-gray-800 p-3 rounded-lg">
-                      <IconComponent className="text-blue-400" size={24} />
-                    </div>
-                    <div>
-                      <div className="text-gray-400 text-sm">{item.label}</div>
-                      {item.href ? (
-                        <a 
-                          href={item.href}
-                          className="text-white hover:text-blue-400 transition-colors duration-200"
-                        >
-                          {item.value}
-                        </a>
-                      ) : (
-                        <div className="text-white">{item.value}</div>
-                      )}
+                  <div key={index} className="cyber-card p-4 hover-lift">
+                    <div className="flex items-center space-x-4">
+                      <div className="p-3 bg-blue-500/10 rounded-lg">
+                        <IconComponent className="text-blue-500" size={20} />
+                      </div>
+                      <div>
+                        <div className="text-gray-400 text-sm font-inter">{item.label}</div>
+                        {item.href ? (
+                          <a 
+                            href={item.href}
+                            className="text-white hover:text-blue-400 transition-colors duration-300 font-inter"
+                          >
+                            {item.value}
+                          </a>
+                        ) : (
+                          <div className="text-white font-inter">{item.value}</div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -120,29 +150,42 @@ const ContactSection = () => {
             </div>
 
             {/* Social Links */}
-            <div className="flex space-x-4">
-              {socialLinks.map((social, index) => {
-                const IconComponent = social.icon;
-                return (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-gray-800 p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200"
-                  >
-                    <IconComponent className="text-gray-300 hover:text-blue-400 transition-colors duration-200" size={24} />
-                  </a>
-                );
-              })}
+            <div className="cyber-card p-6">
+              <h3 className="text-lg font-bold text-white mb-4 font-inter">
+                Connect Online
+              </h3>
+              <div className="flex space-x-4">
+                {socialLinks.map((social, index) => {
+                  const IconComponent = social.icon;
+                  return (
+                    <a
+                      key={index}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 bg-gray-800/50 border border-blue-500/20 rounded-lg hover:border-blue-500/40 hover:bg-blue-500/10 transition-all duration-300 hover-lift"
+                      aria-label={social.label}
+                    >
+                      <IconComponent className="text-blue-400" size={20} />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          {/* Right Column - Contact Form */}
-          <div className="bg-gray-900 p-8 rounded-lg border border-gray-800">
+          {/* Contact Form */}
+          <div className="cyber-card p-8">
+            <div className="flex items-center space-x-2 mb-6">
+              <Terminal className="text-blue-500" size={20} />
+              <h3 className="text-xl font-bold text-white font-inter">
+                Send Message
+              </h3>
+            </div>
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-white text-sm font-medium mb-2">
+                <label htmlFor="name" className="block text-white text-sm font-medium mb-2 font-inter">
                   Name
                 </label>
                 <input
@@ -151,14 +194,14 @@ const ContactSection = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="Your name"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors duration-200"
+                  placeholder="Your full name"
+                  className="w-full bg-gray-800/50 border border-blue-500/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors duration-300 font-inter"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
+                <label htmlFor="email" className="block text-white text-sm font-medium mb-2 font-inter">
                   Email
                 </label>
                 <input
@@ -168,13 +211,13 @@ const ContactSection = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="your.email@example.com"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors duration-200"
+                  className="w-full bg-gray-800/50 border border-blue-500/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors duration-300 font-inter"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-white text-sm font-medium mb-2">
+                <label htmlFor="message" className="block text-white text-sm font-medium mb-2 font-inter">
                   Message
                 </label>
                 <textarea
@@ -182,9 +225,9 @@ const ContactSection = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  placeholder="Tell me about your project or just say hi!"
+                  placeholder="Your message or project details..."
                   rows={5}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors duration-200 resize-none"
+                  className="w-full bg-gray-800/50 border border-blue-500/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors duration-300 resize-none font-inter"
                   required
                 />
               </div>
@@ -192,10 +235,10 @@ const ContactSection = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+                className="w-full btn-primary py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 font-inter font-medium hover-lift"
               >
-                <Send size={20} />
-                <span>{isSubmitting ? 'Sending...' : './send_message.sh'}</span>
+                <Send size={18} />
+                <span>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
               </button>
             </form>
           </div>
