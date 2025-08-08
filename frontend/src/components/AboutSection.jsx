@@ -30,7 +30,7 @@ const AboutSection = () => {
           <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 font-mono text-sm">
             <div className="text-gray-400 mb-2">// Student Profile</div>
             <div className="text-gray-300">
-              <span className="text-blue-400">const</span> <span className="text-yellow-400">student</span> = {'{'}
+              <span className="text-blue-400">const</span> <span className="text-yellow-400">student</span> = {'{'}'{'}
             </div>
             <div className="pl-4 mt-2">
               <div className="text-gray-300">
