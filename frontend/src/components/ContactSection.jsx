@@ -81,11 +81,11 @@ const ContactSection = () => {
               <div className="text-gray-400 mb-2">// Let's connect!</div>
               <div className="text-blue-400">function</div>
               <div className="text-yellow-400 ml-2">getInTouch</div>
-              <div className="text-white">() {</div>
+              <div className="text-white">() {'{'}</div>
               <div className="text-white ml-4">
-                <span className="text-blue-400">return</span> <span className="text-green-400">"{contact.codeSnippet.split('return ')[1].replace('";', '').replace('"', '')}"</span>;
+                <span className="text-blue-400">return</span> <span className="text-green-400">"Ready to collaborate!"</span>;
               </div>
-              <div className="text-white">}</div>
+              <div className="text-white">{'}'}</div>
             </div>
 
             <div className="text-gray-300 leading-relaxed text-lg">
