@@ -15,107 +15,99 @@ const AboutSection = () => {
       brain: Brain
     };
     const IconComponent = icons[iconName] || Code;
-    return <IconComponent size={24} className="text-cyan-400 neon-text" />;
+    return <IconComponent size={20} className="text-blue-500" />;
   };
 
   return (
-    <section id="about" className="py-32 bg-gradient-to-b from-black to-gray-900 cyber-grid relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="about" className="section-padding bg-gradient-to-b from-black to-gray-900 relative">
+      <div className="absolute inset-0 tech-grid opacity-30"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-20">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-orbitron font-black text-white mb-6">
-            <span className="neon-cyan">About</span> <span className="text-white">Me</span>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold font-inter text-white mb-4">
+            About <span className="text-blue-400">Me</span>
           </h2>
-          <div className="w-32 h-1 bg-gradient-to-r from-cyan-400 to-purple-500 mx-auto"></div>
+          <div className="w-24 h-1 bg-blue-500 mx-auto"></div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Code Terminal */}
-          <div className="cyber-card p-8 font-mono">
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="flex space-x-2">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* Code Editor */}
+          <div className="cyber-card p-6">
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="flex space-x-1">
                 <div className="w-3 h-3 bg-red-400 rounded-full"></div>
                 <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
                 <div className="w-3 h-3 bg-green-400 rounded-full"></div>
               </div>
-              <span className="text-cyan-400 font-orbitron text-sm">terminal.js</span>
+              <span className="text-blue-400 font-mono text-sm">profile.json</span>
             </div>
             
-            <div className="text-green-400 text-sm mb-4">
-              user@system:~$ cat profile.json
-            </div>
-            
-            <div className="text-sm leading-relaxed">
-              <div className="text-gray-400 mb-2">// Student Profile</div>
+            <div className="font-mono text-sm">
+              <div className="syntax-comment mb-2">// Developer Profile</div>
               <div className="text-gray-300">
-                <span className="text-cyan-400">const</span> <span className="text-yellow-400">student</span> = {'{'};
+                <span className="syntax-keyword">const</span> <span className="syntax-function">developer</span> = {'{'}
               </div>
-              <div className="pl-6 mt-2 space-y-2">
+              <div className="pl-4 mt-2 space-y-1">
                 <div>
-                  <span className="text-red-400">name:</span> <span className="text-green-400">"{personal.name}"</span>,
+                  <span className="syntax-property">name:</span> <span className="syntax-string">"{personal.name}"</span>,
                 </div>
                 <div>
-                  <span className="text-red-400">degree:</span> <span className="text-green-400">"{personal.degree}"</span>,
+                  <span className="syntax-property">role:</span> <span className="syntax-string">"Software Developer"</span>,
                 </div>
                 <div>
-                  <span className="text-red-400">semester:</span> <span className="text-orange-400">{personal.semester}</span>,
+                  <span className="syntax-property">education:</span> <span className="syntax-string">"{personal.degree}"</span>,
                 </div>
                 <div>
-                  <span className="text-red-400">university:</span> <span className="text-green-400">"{personal.university}"</span>,
+                  <span className="syntax-property">university:</span> <span className="syntax-string">"{personal.university}"</span>,
                 </div>
                 <div>
-                  <span className="text-red-400">passion:</span> <span className="text-green-400">"{personal.passion}"</span>,
+                  <span className="syntax-property">semester:</span> <span className="syntax-number">{personal.semester}</span>,
                 </div>
                 <div>
-                  <span className="text-red-400">status:</span> <span className="text-green-400">"{personal.status}"</span>,
+                  <span className="syntax-property">status:</span> <span className="syntax-string">"Available for opportunities"</span>,
                 </div>
                 <div>
-                  <span className="text-red-400">mode:</span> <span className="text-purple-400">"CYBER_ENHANCED"</span>
+                  <span className="syntax-property">location:</span> <span className="syntax-string">"{personal.location}"</span>
                 </div>
               </div>
               <div className="text-gray-300 mt-2">{'};'}</div>
-              
-              <div className="mt-4 text-green-400">
-                <span className="animate-pulse">█</span> System loaded successfully
-              </div>
             </div>
           </div>
 
-          {/* Description & Skills Grid */}
-          <div className="space-y-8">
-            <div className="cyber-card p-8">
-              <h3 className="text-2xl font-orbitron font-bold text-cyan-400 mb-4 neon-text">
-                System Overview
+          {/* Description & Expertise */}
+          <div className="space-y-6">
+            <div className="cyber-card p-6">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                <Code className="text-blue-500 mr-2" size={20} />
+                Professional Summary
               </h3>
-              <p className="text-gray-300 leading-relaxed text-lg font-rajdhani">
+              <p className="text-gray-300 leading-relaxed font-inter">
                 {about.description}
               </p>
             </div>
 
-            {/* Enhanced Skills Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Expertise Areas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {about.areas.map((area, index) => (
                 <div 
                   key={index}
-                  className="cyber-card p-6 hover:scale-105 transition-all duration-300 group"
+                  className="cyber-card p-4 hover-lift group"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="flex items-start space-x-4">
-                    <div className="p-3 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="flex items-start space-x-3">
+                    <div className="p-2 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors duration-300">
                       {getIcon(area.icon)}
                     </div>
                     <div>
-                      <h4 className="text-white font-orbitron font-bold text-lg mb-2 group-hover:text-cyan-400 transition-colors duration-300">
+                      <h4 className="text-white font-semibold text-sm mb-1">
                         {area.title}
                       </h4>
-                      <p className="text-gray-400 text-sm font-rajdhani">
+                      <p className="text-gray-400 text-xs font-inter">
                         {area.description}
                       </p>
                     </div>
                   </div>
-                  
-                  {/* Animated border */}
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-cyan-400/50 rounded-lg transition-all duration-300"></div>
                 </div>
               ))}
             </div>

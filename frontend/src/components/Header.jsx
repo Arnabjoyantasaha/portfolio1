@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X, Code, Terminal } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,40 +25,42 @@ const Header = () => {
     { label: 'About', id: 'about' },
     { label: 'Skills', id: 'skills' },
     { label: 'Projects', id: 'projects' },
-    { label: 'Game', id: 'game' },
+    { label: 'Games', id: 'game' },
     { label: 'Contact', id: 'contact' }
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-rajdhani ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-inter ${
       isScrolled 
-        ? 'bg-black/80 backdrop-blur-md border-b-2 border-cyan-400/30 shadow-lg shadow-cyan-400/20' 
+        ? 'bg-gray-900/95 backdrop-blur-md border-b border-blue-500/20' 
         : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <Zap className="text-cyan-400 neon-text" size={24} />
-            <span className="text-2xl font-orbitron font-bold cursor-pointer">
-              <span className="text-cyan-400 neon-text">{'>'}</span>
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <Terminal className="text-blue-500" size={24} />
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full"></div>
+            </div>
+            <span className="text-xl font-mono font-semibold cursor-pointer">
+              <span className="text-blue-500">{'>'}</span>
               <span className="text-white">Arnab</span>
-              <span className="text-purple-400 neon-text">{'/'}</span>
+              <span className="text-gray-400">{'/'}</span>
             </span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-1">
+          <nav className="hidden md:flex items-center space-x-1">
             {navItems.map((item, index) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="relative px-6 py-2 text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium text-lg group"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="relative px-4 py-2 text-gray-300 hover:text-blue-400 transition-all duration-300 font-medium group"
               >
                 <span className="relative z-10">{item.label}</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 group-hover:w-full transition-all duration-300"></div>
+                <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"></div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-500 group-hover:w-3/4 transition-all duration-300"></div>
               </button>
             ))}
           </nav>
@@ -66,22 +68,21 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-gray-300 hover:text-cyan-400 transition-colors duration-300 p-2 cyber-button"
+            className="md:hidden text-gray-300 hover:text-blue-400 transition-colors duration-300 p-2 cyber-button rounded-md"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t-2 border-cyan-400/30">
+          <div className="md:hidden py-4 border-t border-blue-500/20">
             <nav className="flex flex-col space-y-2">
-              {navItems.map((item, index) => (
+              {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium text-left py-2 px-4 rounded hover:bg-cyan-400/10"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className="text-gray-300 hover:text-blue-400 transition-all duration-300 font-medium text-left py-3 px-4 rounded-md hover:bg-blue-500/10"
                 >
                   {item.label}
                 </button>

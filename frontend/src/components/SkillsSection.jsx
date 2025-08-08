@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { portfolioData } from '../data/mock';
-import { Zap, Code, Database } from 'lucide-react';
+import { Code, Server, Database } from 'lucide-react';
 
 const SkillsSection = () => {
   const { skills } = portfolioData;
@@ -25,20 +25,18 @@ const SkillsSection = () => {
   }, []);
 
   const SkillBar = ({ skill, delay = 0, isVisible }) => (
-    <div className="mb-6">
-      <div className="flex justify-between items-center mb-3">
-        <span className="text-gray-300 font-rajdhani font-medium text-lg">
+    <div className="mb-4">
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-gray-300 font-inter font-medium">
           {skill.name}
         </span>
-        <span className="text-cyan-400 text-lg font-orbitron font-bold neon-text">
+        <span className="text-blue-400 text-sm font-mono">
           {skill.level}%
         </span>
       </div>
-      <div className="cyber-progress-bar rounded-full h-3">
+      <div className="cyber-progress-bar rounded-lg h-2">
         <div 
-          className={`cyber-progress-fill h-full rounded-full transition-all duration-1000 ease-out ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`cyber-progress-fill h-full rounded-lg transition-all duration-1000 ease-out`}
           style={{ 
             width: isVisible ? `${skill.level}%` : '0%',
             transitionDelay: `${delay}ms`
@@ -50,14 +48,14 @@ const SkillsSection = () => {
 
   const SkillCategory = ({ title, skills, delay = 0, icon: Icon }) => (
     <div 
-      className="cyber-card p-8 hover:scale-105 transition-all duration-500 group"
+      className="cyber-card p-6 hover-lift"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="flex items-center justify-center mb-8">
-        <div className="p-4 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
-          <Icon className="text-cyan-400 neon-text" size={32} />
+      <div className="flex items-center mb-6">
+        <div className="p-3 bg-blue-500/10 rounded-lg mr-4">
+          <Icon className="text-blue-500" size={24} />
         </div>
-        <h3 className="text-white text-2xl font-orbitron font-bold group-hover:text-cyan-400 transition-colors duration-300">
+        <h3 className="text-white text-xl font-bold font-inter">
           {title}
         </h3>
       </div>
@@ -67,40 +65,32 @@ const SkillsSection = () => {
           <SkillBar 
             key={skill.name} 
             skill={skill} 
-            delay={delay + (index * 200)}
+            delay={delay + (index * 100)}
             isVisible={isVisible}
           />
         ))}
       </div>
-      
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-cyan-400/10 to-transparent rounded-bl-full"></div>
-      <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-purple-400/10 to-transparent rounded-tr-full"></div>
     </div>
   );
 
   return (
-    <section id="skills" className="py-32 bg-black cyber-grid relative" ref={sectionRef}>
-      {/* Background effects */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-cyan-400/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      </div>
+    <section id="skills" className="section-padding bg-black relative" ref={sectionRef}>
+      <div className="absolute inset-0 tech-grid opacity-20"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-20">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-orbitron font-black text-white mb-6">
-            <span className="neon-cyan">Skills</span> <span className="text-white">&</span> <span className="neon-purple">Technologies</span>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold font-inter text-white mb-4">
+            Skills & <span className="text-blue-400">Technologies</span>
           </h2>
-          <div className="w-32 h-1 bg-gradient-to-r from-cyan-400 to-purple-500 mx-auto mb-6"></div>
-          <p className="text-gray-300 text-xl font-rajdhani max-w-2xl mx-auto">
-            Advanced proficiency in cutting-edge technologies and frameworks
+          <div className="w-24 h-1 bg-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400 text-lg font-inter max-w-2xl mx-auto">
+            Technical proficiency across various programming languages and frameworks
           </p>
         </div>
 
         {/* Skills Grid */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8 mb-12">
           <SkillCategory 
             title="Core Technologies"
             skills={skills.coreTechnologies}
@@ -111,7 +101,7 @@ const SkillsSection = () => {
             title="Frontend & Backend"
             skills={skills.frontendBackend}
             delay={200}
-            icon={Zap}
+            icon={Server}
           />
           <SkillCategory 
             title="Database & DevOps"
@@ -121,23 +111,21 @@ const SkillsSection = () => {
           />
         </div>
 
-        {/* Additional Tech Stack Display */}
-        <div className="mt-20 text-center">
-          <div className="cyber-card p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-orbitron font-bold text-cyan-400 mb-6 neon-text">
-              Technology Arsenal
-            </h3>
-            <div className="flex flex-wrap justify-center gap-4">
-              {['React', 'Node.js', 'Python', 'JavaScript', 'MongoDB', 'Docker', 'AWS', 'Git'].map((tech, index) => (
-                <div
-                  key={tech}
-                  className="px-6 py-3 bg-gradient-to-r from-cyan-400/10 to-purple-400/10 border border-cyan-400/30 rounded-full hover:border-cyan-400 transition-all duration-300 hover:scale-105 hover:glow"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <span className="text-cyan-400 font-mono font-semibold">{tech}</span>
-                </div>
-              ))}
-            </div>
+        {/* Technology Stack */}
+        <div className="cyber-card p-8 text-center">
+          <h3 className="text-xl font-bold text-white mb-6 font-inter">
+            Technology Stack
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+            {['React', 'Node.js', 'Python', 'JavaScript', 'MongoDB', 'Java', 'C++', 'Git'].map((tech, index) => (
+              <div
+                key={tech}
+                className="p-4 bg-gray-800/30 border border-blue-500/20 rounded-lg hover:border-blue-500/40 transition-all duration-300 hover-lift"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <span className="text-blue-400 font-mono text-sm font-semibold">{tech}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
