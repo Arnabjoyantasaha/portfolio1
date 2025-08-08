@@ -30,7 +30,30 @@ const AboutSection = () => {
           <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 font-mono text-sm">
             <div className="text-gray-400 mb-2">// Student Profile</div>
             <div className="text-gray-300">
-              <span className="text-blue-400">const</span> <span className="text-yellow-400">student</span> = {'{'}'{'}
+              <span className="text-blue-400">const</span> <span className="text-yellow-400">student</span> = {'{'}
+            </div>
+            <div className="pl-4 mt-2">
+              <div className="text-gray-300">
+                <span className="text-red-400">name:</span> <span className="text-green-400">"{personal.name}"</span>,
+              </div>
+              <div className="text-gray-300">
+                <span className="text-red-400">degree:</span> <span className="text-green-400">"{personal.degree}"</span>,
+              </div>
+              <div className="text-gray-300">
+                <span className="text-red-400">semester:</span> <span className="text-orange-400">{personal.semester}</span>,
+              </div>
+              <div className="text-gray-300">
+                <span className="text-red-400">university:</span> <span className="text-green-400">"{personal.university}"</span>,
+              </div>
+              <div className="text-gray-300">
+                <span className="text-red-400">passion:</span> <span className="text-green-400">"{personal.passion}"</span>,
+              </div>
+              <div className="text-gray-300">
+                <span className="text-red-400">status:</span> <span className="text-green-400">"{personal.status}"</span>
+              </div>
+            </div>
+            <div className="text-gray-300 mt-2">{'};'}</div>
+          </div>'{'}
             </div>
             <div className="pl-4 mt-2">
               <div className="text-gray-300">
