@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gamepad2, Users, Heart } from 'lucide-react';
+import { Gamepad2, Brain, Heart, Zap } from 'lucide-react';
 import TicTacToe from './TicTacToe';
 import ChessGame from './ChessGame';
 
@@ -15,12 +15,12 @@ const GameSection = () => {
         <div className="mb-16">
           <h2 className="text-4xl md:text-5xl font-bold font-inter text-white mb-4 flex items-center justify-center">
             <Gamepad2 className="text-blue-500 mr-4" size={40} />
-            Let's <span className="text-blue-400 ml-2">Play Together!</span>
+            Come <span className="text-blue-400 ml-2">Play With Me!</span>
           </h2>
           <div className="w-24 h-1 bg-blue-500 mx-auto mb-4"></div>
           <p className="text-gray-400 text-lg font-inter max-w-2xl mx-auto flex items-center justify-center">
             <Heart className="mr-2 text-red-400" size={20} />
-            Interactive games to play together - come join me for some fun!
+            Challenge my advanced AI in these fun games - I'll be your opponent!
           </p>
         </div>
 
@@ -34,8 +34,8 @@ const GameSection = () => {
                 : 'btn-outline hover-lift'
             }`}
           >
-            <Users size={18} />
-            <span>Tic-Tac-Toe</span>
+            <Brain size={18} />
+            <span>Tic-Tac-Toe AI</span>
           </button>
           <button
             onClick={() => setActiveGame('chess')}
@@ -45,8 +45,8 @@ const GameSection = () => {
                 : 'btn-outline hover-lift'
             }`}
           >
-            <Users size={18} />
-            <span>Chess</span>
+            <Brain size={18} />
+            <span>Chess AI</span>
           </button>
         </div>
 
@@ -55,21 +55,21 @@ const GameSection = () => {
           {activeGame === 'tictactoe' ? (
             <div>
               <h3 className="text-white font-bold mb-2 font-inter flex items-center justify-center">
-                <Heart className="mr-2 text-red-400" size={16} />
-                Tic-Tac-Toe Fun
+                <Brain className="mr-2 text-blue-400" size={16} />
+                Smart Tic-Tac-Toe AI
               </h3>
               <p className="text-gray-400 text-sm font-inter">
-                Classic game for two players! Take turns and try to get three in a row. Let's see who wins!
+                I'm a strategic AI that uses the minimax algorithm. Try to beat me - I'll make optimal moves every time!
               </p>
             </div>
           ) : (
             <div>
               <h3 className="text-white font-bold mb-2 font-inter flex items-center justify-center">
-                <Heart className="mr-2 text-red-400" size={16} />
-                Chess Together
+                <Brain className="mr-2 text-blue-400" size={16} />
+                Advanced Chess AI
               </h3>
               <p className="text-gray-400 text-sm font-inter">
-                The classic strategy game! White moves first, then we take turns. Let's play and have fun together!
+                Challenge my advanced chess engine! I use deep minimax search with alpha-beta pruning and positional evaluation.
               </p>
             </div>
           )}
@@ -80,14 +80,17 @@ const GameSection = () => {
           {activeGame === 'tictactoe' ? <TicTacToe /> : <ChessGame />}
         </div>
 
-        {/* Friendly Message */}
+        {/* AI Challenge Message */}
         <div className="mt-12 cyber-card p-6 max-w-lg mx-auto">
           <div className="text-center">
-            <Heart className="mx-auto text-red-400 mb-3" size={24} />
-            <h3 className="text-white font-bold mb-2 font-inter">Come Play With Me!</h3>
+            <div className="flex items-center justify-center mb-3">
+              <Brain className="text-blue-400 mr-2" size={24} />
+              <Zap className="text-yellow-400" size={20} />
+            </div>
+            <h3 className="text-white font-bold mb-2 font-inter">Challenge My AI Brain!</h3>
             <p className="text-gray-400 text-sm font-inter">
-              I love playing games with visitors! Pick a game above and let's have some fun together. 
-              No pressure - just good times! 🎮
+              I've trained myself to be a worthy opponent. I'll analyze every move and play strategically. 
+              Come test your skills against me - let's see who's smarter! 🧠🎮
             </p>
           </div>
         </div>

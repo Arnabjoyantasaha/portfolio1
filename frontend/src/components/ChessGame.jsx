@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { RotateCcw, Crown, Users, Heart } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { RotateCcw, Crown, Brain, Heart, Zap } from 'lucide-react';
 
 const ChessGame = () => {
   // Initial chess board setup
@@ -15,11 +15,13 @@ const ChessGame = () => {
   ];
 
   const [board, setBoard] = useState(initialBoard);
-  const [currentPlayer, setCurrentPlayer] = useState('white');
+  const [currentPlayer, setCurrentPlayer] = useState('white'); // Human is white, AI is black
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [gameStatus, setGameStatus] = useState('playing');
   const [moveHistory, setMoveHistory] = useState([]);
+  const [isAiThinking, setIsAiThinking] = useState(false);
   const [capturedPieces, setCapturedPieces] = useState({ white: [], black: [] });
+  const [gamePhase, setGamePhase] = useState('opening');
 
   // Enhanced chess piece symbols with better visibility
   const pieceSymbols = {
@@ -27,11 +29,151 @@ const ChessGame = () => {
     'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
   };
 
+  // Professional piece values for evaluation
+  const pieceValues = {
+    'p': -100, 'r': -500, 'n': -320, 'b': -330, 'q': -900, 'k': -20000,
+    'P': 100, 'R': 500, 'N': 320, 'B': 330, 'Q': 900, 'K': 20000
+  };
+
+  // Advanced Piece-Square Tables for positional evaluation
+  const pawnTable = [
+    [0,  0,  0,  0,  0,  0,  0,  0],
+    [50, 50, 50, 50, 50, 50, 50, 50],
+    [10, 10, 20, 30, 30, 20, 10, 10],
+    [5,  5, 10, 25, 25, 10,  5,  5],
+    [0,  0,  0, 20, 20,  0,  0,  0],
+    [5, -5,-10,  0,  0,-10, -5,  5],
+    [5, 10, 10,-20,-20, 10, 10,  5],
+    [0,  0,  0,  0,  0,  0,  0,  0]
+  ];
+
+  const knightTable = [
+    [-50,-40,-30,-30,-30,-30,-40,-50],
+    [-40,-20,  0,  0,  0,  0,-20,-40],
+    [-30,  0, 10, 15, 15, 10,  0,-30],
+    [-30,  5, 15, 20, 20, 15,  5,-30],
+    [-30,  0, 15, 20, 20, 15,  0,-30],
+    [-30,  5, 10, 15, 15, 10,  5,-30],
+    [-40,-20,  0,  5,  5,  0,-20,-40],
+    [-50,-40,-30,-30,-30,-30,-40,-50]
+  ];
+
+  const bishopTable = [
+    [-20,-10,-10,-10,-10,-10,-10,-20],
+    [-10,  0,  0,  0,  0,  0,  0,-10],
+    [-10,  0,  5, 10, 10,  5,  0,-10],
+    [-10,  5,  5, 10, 10,  5,  5,-10],
+    [-10,  0, 10, 10, 10, 10,  0,-10],
+    [-10, 10, 10, 10, 10, 10, 10,-10],
+    [-10,  5,  0,  0,  0,  0,  5,-10],
+    [-20,-10,-10,-10,-10,-10,-10,-20]
+  ];
+
+  const rookTable = [
+    [0,  0,  0,  0,  0,  0,  0,  0],
+    [5, 10, 10, 10, 10, 10, 10,  5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [0,  0,  0,  5,  5,  0,  0,  0]
+  ];
+
+  const queenTable = [
+    [-20,-10,-10, -5, -5,-10,-10,-20],
+    [-10,  0,  0,  0,  0,  0,  0,-10],
+    [-10,  0,  5,  5,  5,  5,  0,-10],
+    [-5,  0,  5,  5,  5,  5,  0, -5],
+    [0,  0,  5,  5,  5,  5,  0, -5],
+    [-10,  5,  5,  5,  5,  5,  0,-10],
+    [-10,  0,  5,  0,  0,  0,  0,-10],
+    [-20,-10,-10, -5, -5,-10,-10,-20]
+  ];
+
+  const kingMiddleGameTable = [
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-20,-30,-30,-40,-40,-30,-30,-20],
+    [-10,-20,-20,-20,-20,-20,-20,-10],
+    [20, 20,  0,  0,  0,  0, 20, 20],
+    [20, 30, 10,  0,  0, 10, 30, 20]
+  ];
+
   // Check if a piece is white or black
   const isWhitePiece = (piece) => piece && piece === piece.toUpperCase();
   const isBlackPiece = (piece) => piece && piece === piece.toLowerCase();
 
-  // Get all valid moves for a piece
+  // Advanced position evaluation with piece-square tables
+  const evaluatePosition = useCallback((board) => {
+    let score = 0;
+    let whiteKingPos = null;
+    let blackKingPos = null;
+    let materialCount = 0;
+
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece) {
+          materialCount++;
+          score += pieceValues[piece];
+
+          // Add positional bonuses
+          const isWhite = isWhitePiece(piece);
+          const adjustedRow = isWhite ? 7 - row : row;
+          
+          switch (piece.toLowerCase()) {
+            case 'p':
+              score += isWhite ? pawnTable[adjustedRow][col] : -pawnTable[adjustedRow][col];
+              break;
+            case 'n':
+              score += isWhite ? knightTable[adjustedRow][col] : -knightTable[adjustedRow][col];
+              break;
+            case 'b':
+              score += isWhite ? bishopTable[adjustedRow][col] : -bishopTable[adjustedRow][col];
+              break;
+            case 'r':
+              score += isWhite ? rookTable[adjustedRow][col] : -rookTable[adjustedRow][col];
+              break;
+            case 'q':
+              score += isWhite ? queenTable[adjustedRow][col] : -queenTable[adjustedRow][col];
+              break;
+            case 'k':
+              if (isWhite) {
+                whiteKingPos = [row, col];
+                score += kingMiddleGameTable[adjustedRow][col];
+              } else {
+                blackKingPos = [row, col];
+                score -= kingMiddleGameTable[adjustedRow][col];
+              }
+              break;
+          }
+        }
+      }
+    }
+
+    // Endgame adjustments
+    if (materialCount < 16) {
+      setGamePhase('endgame');
+      // In endgame, centralize king
+      if (whiteKingPos) {
+        const centerDistance = Math.abs(whiteKingPos[0] - 3.5) + Math.abs(whiteKingPos[1] - 3.5);
+        score -= centerDistance * 10;
+      }
+      if (blackKingPos) {
+        const centerDistance = Math.abs(blackKingPos[0] - 3.5) + Math.abs(blackKingPos[1] - 3.5);
+        score += centerDistance * 10;
+      }
+    } else if (materialCount < 24) {
+      setGamePhase('middlegame');
+    }
+
+    return score;
+  }, []);
+
+  // Get all valid moves for a piece with enhanced logic
   const getValidMoves = useCallback((board, fromRow, fromCol) => {
     const piece = board[fromRow][fromCol];
     if (!piece) return [];
@@ -41,7 +183,7 @@ const ChessGame = () => {
     const pieceLower = piece.toLowerCase();
 
     switch (pieceLower) {
-      case 'p': // Pawn
+      case 'p': // Enhanced pawn logic
         const direction = isWhite ? -1 : 1;
         const startRow = isWhite ? 6 : 1;
         
@@ -163,6 +305,60 @@ const ChessGame = () => {
     return moves;
   }, []);
 
+  // Check if king is in check
+  const isKingInCheck = useCallback((board, isWhiteKing) => {
+    let kingPos = null;
+    
+    // Find the king
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece && piece.toLowerCase() === 'k' && isWhitePiece(piece) === isWhiteKing) {
+          kingPos = [row, col];
+          break;
+        }
+      }
+      if (kingPos) break;
+    }
+    
+    if (!kingPos) return false;
+    
+    // Check if any opponent piece can attack the king
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece && isWhitePiece(piece) !== isWhiteKing) {
+          const moves = getValidMoves(board, row, col);
+          if (moves.some(([r, c]) => r === kingPos[0] && c === kingPos[1])) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
+  }, [getValidMoves]);
+
+  const getAllValidMovesForPlayer = useCallback((board, isWhite) => {
+    const moves = [];
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece && isWhitePiece(piece) === isWhite) {
+          const validMoves = getValidMoves(board, row, col);
+          for (const [toRow, toCol] of validMoves) {
+            // Check if move doesn't put own king in check
+            const newBoard = makeMove(board, [row, col], [toRow, toCol]);
+            if (!isKingInCheck(newBoard, isWhite)) {
+              moves.push({ from: [row, col], to: [toRow, toCol], piece });
+            }
+          }
+        }
+      }
+    }
+    return moves;
+  }, [getValidMoves, isKingInCheck]);
+
   const makeMove = useCallback((board, from, to) => {
     const newBoard = board.map(row => [...row]);
     const [fromRow, fromCol] = from;
@@ -174,53 +370,186 @@ const ChessGame = () => {
     return newBoard;
   }, []);
 
-  const handleSquareClick = (row, col) => {
-    if (gameStatus !== 'playing') return;
+  // Enhanced minimax with alpha-beta pruning and deeper search
+  const minimax = useCallback((board, depth, isMaximizing, alpha, beta) => {
+    if (depth === 0) {
+      return evaluatePosition(board);
+    }
 
-    if (selectedSquare) {
-      const [selectedRow, selectedCol] = selectedSquare;
-      const selectedPiece = board[selectedRow][selectedCol];
+    const moves = getAllValidMovesForPlayer(board, !isMaximizing);
+    
+    if (moves.length === 0) {
+      // Check if it's checkmate or stalemate
+      const inCheck = isKingInCheck(board, !isMaximizing);
+      if (inCheck) {
+        return isMaximizing ? -10000 + (6 - depth) : 10000 - (6 - depth);
+      }
+      return 0; // Stalemate
+    }
+
+    // Sort moves for better alpha-beta pruning
+    moves.sort((a, b) => {
+      const aCapture = board[a.to[0]][a.to[1]] !== null;
+      const bCapture = board[b.to[0]][b.to[1]] !== null;
+      if (aCapture && !bCapture) return -1;
+      if (!aCapture && bCapture) return 1;
       
-      // Check if it's the current player's piece
-      const isCurrentPlayerPiece = selectedPiece && 
-        ((currentPlayer === 'white' && isWhitePiece(selectedPiece)) ||
-         (currentPlayer === 'black' && isBlackPiece(selectedPiece)));
+      // Prioritize center moves
+      const aCenterScore = Math.abs(a.to[0] - 3.5) + Math.abs(a.to[1] - 3.5);
+      const bCenterScore = Math.abs(b.to[0] - 3.5) + Math.abs(b.to[1] - 3.5);
+      return aCenterScore - bCenterScore;
+    });
+
+    if (isMaximizing) {
+      let maxEval = -Infinity;
+      for (let i = 0; i < Math.min(moves.length, 30); i++) {
+        const move = moves[i];
+        const newBoard = makeMove(board, move.from, move.to);
+        const eval_ = minimax(newBoard, depth - 1, false, alpha, beta);
+        maxEval = Math.max(maxEval, eval_);
+        alpha = Math.max(alpha, eval_);
+        if (beta <= alpha) break;
+      }
+      return maxEval;
+    } else {
+      let minEval = Infinity;
+      for (let i = 0; i < Math.min(moves.length, 30); i++) {
+        const move = moves[i];
+        const newBoard = makeMove(board, move.from, move.to);
+        const eval_ = minimax(newBoard, depth - 1, true, alpha, beta);
+        minEval = Math.min(minEval, eval_);
+        beta = Math.min(beta, eval_);
+        if (beta <= alpha) break;
+      }
+      return minEval;
+    }
+  }, [evaluatePosition, getAllValidMovesForPlayer, makeMove, isKingInCheck]);
+
+  // Advanced AI move selection - THE BEST AI
+  const getBestAiMove = useCallback((board) => {
+    const moves = getAllValidMovesForPlayer(board, false); // AI plays black
+    
+    if (moves.length === 0) return null;
+
+    let bestMove = null;
+    let bestValue = Infinity;
+    const depth = gamePhase === 'endgame' ? 6 : 5; // Very deep search
+
+    // Advanced opening book for early game
+    if (moveHistory.length < 8) {
+      const openingMoves = moves.filter(move => {
+        const piece = move.piece.toLowerCase();
+        const [toRow, toCol] = move.to;
+        
+        // Prioritize strong opening principles
+        if (piece === 'p' && (toCol === 3 || toCol === 4) && (toRow === 4 || toRow === 5)) return true; // Central pawns
+        if (piece === 'n' && ((toRow === 5 && (toCol === 2 || toCol === 5)) || (toRow === 2 && (toCol === 2 || toCol === 5)))) return true; // Knight development
+        if (piece === 'b' && (toRow === 4 || toRow === 3) && Math.abs(toCol - 3.5) <= 2) return true; // Bishop development
+        if (piece === 'q' && toRow > 1 && moveHistory.length > 4) return true; // Queen development after pieces
+        
+        return false;
+      });
       
-      if (!isCurrentPlayerPiece) {
-        setSelectedSquare(null);
-        return;
+      if (openingMoves.length > 0) {
+        // Choose the best opening move
+        let bestOpeningMove = openingMoves[0];
+        let bestOpeningValue = Infinity;
+        
+        for (const move of openingMoves.slice(0, 5)) {
+          const newBoard = makeMove(board, move.from, move.to);
+          const value = minimax(newBoard, 3, true, -Infinity, Infinity);
+          if (value < bestOpeningValue) {
+            bestOpeningValue = value;
+            bestOpeningMove = move;
+          }
+        }
+        return bestOpeningMove;
+      }
+    }
+
+    // Full minimax search for best move
+    for (const move of moves.slice(0, 35)) {
+      const newBoard = makeMove(board, move.from, move.to);
+      let moveValue = minimax(newBoard, depth, true, -Infinity, Infinity);
+      
+      // Add strategic bonuses
+      const capturedPiece = board[move.to[0]][move.to[1]];
+      if (capturedPiece) {
+        moveValue -= Math.abs(pieceValues[capturedPiece]) * 0.15; // Strong capture bonus
       }
       
-      const validMoves = getValidMoves(board, selectedRow, selectedCol);
+      // Bonus for controlling center
+      const centerBonus = (Math.abs(move.to[0] - 3.5) + Math.abs(move.to[1] - 3.5)) < 2 ? 20 : 0;
+      moveValue -= centerBonus;
       
-      if (validMoves.some(([r, c]) => r === row && c === col)) {
-        const capturedPiece = board[row][col];
-        if (capturedPiece) {
-          if (currentPlayer === 'white') {
-            setCapturedPieces(prev => ({
-              ...prev,
-              black: [...prev.black, capturedPiece]
-            }));
-          } else {
+      // Check for creating threats
+      const threats = getAllValidMovesForPlayer(newBoard, true).filter(m => 
+        newBoard[m.to[0]][m.to[1]] && !isWhitePiece(newBoard[m.to[0]][m.to[1]])
+      );
+      moveValue += threats.length * 15;
+      
+      if (moveValue < bestValue) {
+        bestValue = moveValue;
+        bestMove = move;
+      }
+    }
+
+    return bestMove;
+  }, [getAllValidMovesForPlayer, makeMove, minimax, gamePhase, moveHistory]);
+
+  // Handle AI move with advanced processing
+  useEffect(() => {
+    if (currentPlayer === 'black' && gameStatus === 'playing') {
+      setIsAiThinking(true);
+      const timer = setTimeout(() => {
+        const bestMove = getBestAiMove(board);
+        if (bestMove) {
+          const capturedPiece = board[bestMove.to[0]][bestMove.to[1]];
+          if (capturedPiece) {
             setCapturedPieces(prev => ({
               ...prev,
               white: [...prev.white, capturedPiece]
             }));
           }
+          
+          const newBoard = makeMove(board, bestMove.from, bestMove.to);
+          setBoard(newBoard);
+          setMoveHistory(prev => [...prev, bestMove]);
+          setCurrentPlayer('white');
+        }
+        setIsAiThinking(false);
+      }, 1800); // Longer thinking time for dramatic effect
+      
+      return () => clearTimeout(timer);
+    }
+  }, [currentPlayer, gameStatus, board, getBestAiMove, makeMove]);
+
+  const handleSquareClick = (row, col) => {
+    if (currentPlayer !== 'white' || gameStatus !== 'playing' || isAiThinking) return;
+
+    if (selectedSquare) {
+      const [selectedRow, selectedCol] = selectedSquare;
+      const validMoves = getValidMoves(board, selectedRow, selectedCol);
+      
+      if (validMoves.some(([r, c]) => r === row && c === col)) {
+        const capturedPiece = board[row][col];
+        if (capturedPiece) {
+          setCapturedPieces(prev => ({
+            ...prev,
+            black: [...prev.black, capturedPiece]
+          }));
         }
         
         const newBoard = makeMove(board, selectedSquare, [row, col]);
         setBoard(newBoard);
         setMoveHistory(prev => [...prev, { from: selectedSquare, to: [row, col] }]);
-        setCurrentPlayer(currentPlayer === 'white' ? 'black' : 'white');
+        setCurrentPlayer('black');
       }
       
       setSelectedSquare(null);
     } else {
       const piece = board[row][col];
-      if (piece && 
-          ((currentPlayer === 'white' && isWhitePiece(piece)) ||
-           (currentPlayer === 'black' && isBlackPiece(piece)))) {
+      if (piece && isWhitePiece(piece) && currentPlayer === 'white') {
         setSelectedSquare([row, col]);
       }
     }
@@ -233,6 +562,7 @@ const ChessGame = () => {
     setGameStatus('playing');
     setMoveHistory([]);
     setCapturedPieces({ white: [], black: [] });
+    setGamePhase('opening');
   };
 
   return (
@@ -244,11 +574,11 @@ const ChessGame = () => {
             <Crown className="text-blue-500" size={24} />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white font-inter">Let's Play Chess!</h3>
-            <p className="text-gray-400 text-sm flex items-center">
-              <Users size={14} className="mr-1" />
-              2-Player Game
-            </p>
+            <h3 className="text-xl font-bold text-white font-inter flex items-center">
+              <Heart className="mr-2 text-red-400" size={18} />
+              Play Chess With Me!
+            </h3>
+            <p className="text-gray-400 text-sm">You vs Advanced AI</p>
           </div>
         </div>
         
@@ -263,25 +593,38 @@ const ChessGame = () => {
 
       {/* Game Status */}
       <div className="text-center mb-6">
-        <div className="cyber-card p-4">
-          <div className="text-lg text-gray-300 font-inter mb-2">
-            <Heart className="inline text-red-400 mr-2" size={16} />
-            Current Turn: <span className={`font-semibold ${
-              currentPlayer === 'white' ? 'text-blue-400' : 'text-purple-400'
-            }`}>
-              {currentPlayer === 'white' ? 'White Player' : 'Black Player'}
-            </span>
+        {isAiThinking ? (
+          <div className="flex items-center justify-center space-x-3 cyber-card p-4">
+            <Brain className="text-blue-500 animate-pulse" size={20} />
+            <div>
+              <div className="text-blue-400 text-lg font-inter font-medium">I'm thinking...</div>
+              <div className="text-gray-400 text-sm">Analyzing {gamePhase} position</div>
+            </div>
+            <Zap className="text-yellow-400 animate-pulse" size={16} />
           </div>
-          <div className="text-gray-400 text-sm">
-            Move #{moveHistory.length + 1} • Click your pieces to play!
+        ) : (
+          <div className="cyber-card p-4">
+            <div className="text-lg text-gray-300 font-inter">
+              {currentPlayer === 'white' ? 
+                <span className="text-blue-400 font-semibold flex items-center justify-center">
+                  <Heart className="mr-2 text-red-400" size={16} />
+                  Your Turn (White)
+                </span> : 
+                <span className="text-purple-400 font-semibold">My Turn (Black)</span>
+              }
+            </div>
+            <div className="text-gray-400 text-sm mt-1">
+              Game Phase: <span className="text-blue-400 capitalize">{gamePhase}</span> • 
+              Moves: <span className="font-mono">{moveHistory.length}</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Captured Pieces */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="cyber-card p-3">
-          <div className="text-white text-sm font-inter mb-2">White Captured:</div>
+          <div className="text-white text-sm font-inter mb-2">You Captured:</div>
           <div className="flex flex-wrap gap-1">
             {capturedPieces.black.map((piece, index) => (
               <span key={index} className="text-lg">{pieceSymbols[piece]}</span>
@@ -292,7 +635,7 @@ const ChessGame = () => {
           </div>
         </div>
         <div className="cyber-card p-3">
-          <div className="text-white text-sm font-inter mb-2">Black Captured:</div>
+          <div className="text-white text-sm font-inter mb-2">I Captured:</div>
           <div className="flex flex-wrap gap-1">
             {capturedPieces.white.map((piece, index) => (
               <span key={index} className="text-lg">{pieceSymbols[piece]}</span>
@@ -304,7 +647,7 @@ const ChessGame = () => {
         </div>
       </div>
 
-      {/* Chess Board */}
+      {/* Enhanced Chess Board */}
       <div className="bg-gray-800 p-4 rounded-lg">
         <div className="grid grid-cols-8 gap-0.5">
           {board.map((row, rowIndex) =>
@@ -326,6 +669,7 @@ const ChessGame = () => {
                     ${isSelected ? 'ring-4 ring-blue-400 ring-opacity-60' : ''}
                     ${isValidMove ? 'ring-2 ring-green-400 ring-opacity-80' : ''}
                     hover:brightness-110 hover:scale-105
+                    ${isAiThinking ? 'pointer-events-none' : ''}
                   `}
                 >
                   {piece && (
@@ -359,14 +703,14 @@ const ChessGame = () => {
       {/* Game Instructions */}
       <div className="mt-6 cyber-card p-4">
         <div className="text-center">
-          <div className="text-white text-sm font-inter mb-2">
-            <Heart className="inline text-red-400 mr-1" size={14} />
-            Play with me! Take turns moving pieces
+          <div className="text-white text-sm font-inter mb-2 flex items-center justify-center">
+            <Heart className="mr-2 text-red-400" size={14} />
+            Come play chess with me! I'll be a challenging opponent
           </div>
           <div className="flex items-center justify-center space-x-4 text-xs text-gray-400">
             <span>🟦 Selected</span>
             <span>🟢 Valid Move</span>
-            <span>👥 2-Player Fun</span>
+            <span>🧠 Advanced AI</span>
           </div>
         </div>
       </div>
