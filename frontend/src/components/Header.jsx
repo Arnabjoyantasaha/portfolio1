@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Zap } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,27 +30,35 @@ const Header = () => {
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-gray-900/95 backdrop-blur-sm border-b border-gray-800' : 'bg-transparent'
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-rajdhani ${
+      isScrolled 
+        ? 'bg-black/80 backdrop-blur-md border-b-2 border-cyan-400/30 shadow-lg shadow-cyan-400/20' 
+        : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center">
-            <span className="text-blue-400 text-xl font-mono cursor-pointer">
-              {'>'}_<span className="text-white">Arnab</span>{'/'}
+          <div className="flex items-center space-x-2">
+            <Zap className="text-cyan-400 neon-text" size={24} />
+            <span className="text-2xl font-orbitron font-bold cursor-pointer">
+              <span className="text-cyan-400 neon-text">{'>'}</span>
+              <span className="text-white">Arnab</span>
+              <span className="text-purple-400 neon-text">{'/'}</span>
             </span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            {navItems.map((item) => (
+          <nav className="hidden md:flex space-x-1">
+            {navItems.map((item, index) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium"
+                className="relative px-6 py-2 text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium text-lg group"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {item.label}
+                <span className="relative z-10">{item.label}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 group-hover:w-full transition-all duration-300"></div>
               </button>
             ))}
           </nav>
@@ -58,7 +66,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-gray-300 hover:text-blue-400 transition-colors duration-200"
+            className="md:hidden text-gray-300 hover:text-cyan-400 transition-colors duration-300 p-2 cyber-button"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -66,13 +74,14 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-800">
-            <nav className="flex flex-col space-y-4">
-              {navItems.map((item) => (
+          <div className="md:hidden py-4 border-t-2 border-cyan-400/30">
+            <nav className="flex flex-col space-y-2">
+              {navItems.map((item, index) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium text-left"
+                  className="text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium text-left py-2 px-4 rounded hover:bg-cyan-400/10"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {item.label}
                 </button>
