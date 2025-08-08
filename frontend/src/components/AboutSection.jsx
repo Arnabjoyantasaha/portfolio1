@@ -54,29 +54,6 @@ const AboutSection = () => {
               </div>
             </div>
             <div className="text-gray-300 mt-2">{'};'}</div>
-          </div>'{'}
-            </div>
-            <div className="pl-4 mt-2">
-              <div className="text-gray-300">
-                <span className="text-red-400">name:</span> <span className="text-green-400">"{personal.name}"</span>,
-              </div>
-              <div className="text-gray-300">
-                <span className="text-red-400">degree:</span> <span className="text-green-400">"{personal.degree}"</span>,
-              </div>
-              <div className="text-gray-300">
-                <span className="text-red-400">semester:</span> <span className="text-orange-400">{personal.semester}</span>,
-              </div>
-              <div className="text-gray-300">
-                <span className="text-red-400">university:</span> <span className="text-green-400">"{personal.university}"</span>,
-              </div>
-              <div className="text-gray-300">
-                <span className="text-red-400">passion:</span> <span className="text-green-400">"{personal.passion}"</span>,
-              </div>
-              <div className="text-gray-300">
-                <span className="text-red-400">status:</span> <span className="text-green-400">"{personal.status}"</span>
-              </div>
-            </div>
-            <div className="text-gray-300 mt-2">{'};'}</div>
           </div>
 
           {/* Description */}
